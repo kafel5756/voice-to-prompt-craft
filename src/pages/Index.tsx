@@ -210,16 +210,16 @@ const Index = () => {
                           placeholder="Describe what you want the AI to help you with..."
                           value={originalText}
                           onChange={(e) => setOriginalText(e.target.value)}
-                          className="min-h-[120px] mt-2 pr-10"
+                          className="min-h-[120px] mt-2"
                         />
                         {originalText && (
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={handleClearText}
-                            className="absolute top-3 right-2 h-8 w-8 p-0 hover:bg-destructive/10"
+                            className="absolute top-4 right-3 h-6 w-6 p-0 hover:bg-destructive/10 bg-background/80 backdrop-blur-sm rounded-full"
                           >
-                            <X className="h-4 w-4" />
+                            <X className="h-3 w-3" />
                           </Button>
                         )}
                       </div>
