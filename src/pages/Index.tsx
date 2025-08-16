@@ -8,17 +8,18 @@ import { Separator } from '@/components/ui/separator';
 import { VoiceRecorder } from '@/components/VoiceRecorder';
 import { PromptDisplay } from '@/components/PromptDisplay';
 import { PromptHistory } from '@/components/PromptHistory';
+import { ManualJsonConverter } from '@/components/ManualJsonConverter';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Mic, Wand2, LogOut, Loader2, Type } from 'lucide-react';
+import { Mic, Wand2, LogOut, Loader2, Type, Code } from 'lucide-react';
 
 const Index = () => {
   const [originalText, setOriginalText] = useState('');
   const [jsonPrompt, setJsonPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const [inputMode, setInputMode] = useState<'voice' | 'text'>('voice');
+  const [inputMode, setInputMode] = useState<'voice' | 'text' | 'manual'>('voice');
   const { user, signOut, loading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -171,6 +172,15 @@ const Index = () => {
                       <Type className="h-4 w-4 mr-2" />
                       Text
                     </Button>
+                    <Button
+                      variant={inputMode === 'manual' ? 'default' : 'ghost'}
+                      size="sm"
+                      onClick={() => setInputMode('manual')}
+                      className="rounded-md"
+                    >
+                      <Code className="h-4 w-4 mr-2" />
+                      Manual
+                    </Button>
                   </div>
                 </CardTitle>
               </CardHeader>
@@ -185,7 +195,7 @@ const Index = () => {
                       Record your voice to automatically generate an AI prompt
                     </p>
                   </div>
-                ) : (
+                ) : inputMode === 'text' ? (
                   <div className="space-y-4">
                     <div>
                       <Label htmlFor="text-input">Describe your prompt idea</Label>
@@ -214,6 +224,10 @@ const Index = () => {
                         </>
                       )}
                     </Button>
+                  </div>
+                ) : (
+                  <div>
+                    <ManualJsonConverter onSave={handleSavePrompt} />
                   </div>
                 )}
               </CardContent>
