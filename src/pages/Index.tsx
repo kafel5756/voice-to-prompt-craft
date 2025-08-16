@@ -12,7 +12,7 @@ import { ManualJsonConverter } from '@/components/ManualJsonConverter';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Mic, Wand2, LogOut, Loader2, Type, Code } from 'lucide-react';
+import { Mic, Wand2, LogOut, Loader2, Type, Code, X } from 'lucide-react';
 
 const Index = () => {
   const [originalText, setOriginalText] = useState('');
@@ -119,6 +119,11 @@ const Index = () => {
     }
   };
 
+  const handleClearText = () => {
+    setOriginalText('');
+    setJsonPrompt('');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       {/* Header */}
@@ -199,31 +204,55 @@ const Index = () => {
                   <div className="space-y-4">
                     <div>
                       <Label htmlFor="text-input">Describe your prompt idea</Label>
-                      <Textarea
-                        id="text-input"
-                        placeholder="Describe what you want the AI to help you with..."
-                        value={originalText}
-                        onChange={(e) => setOriginalText(e.target.value)}
-                        className="min-h-[120px] mt-2"
-                      />
+                      <div className="relative">
+                        <Textarea
+                          id="text-input"
+                          placeholder="Describe what you want the AI to help you with..."
+                          value={originalText}
+                          onChange={(e) => setOriginalText(e.target.value)}
+                          className="min-h-[120px] mt-2 pr-10"
+                        />
+                        {originalText && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={handleClearText}
+                            className="absolute top-3 right-2 h-8 w-8 p-0 hover:bg-destructive/10"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
                     </div>
-                    <Button 
-                      onClick={handleTextSubmit}
-                      disabled={!originalText.trim() || isGenerating}
-                      className="w-full bg-gradient-to-r from-primary to-purple-600"
-                    >
-                      {isGenerating ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Generating...
-                        </>
-                      ) : (
-                        <>
-                          <Wand2 className="mr-2 h-4 w-4" />
-                          Generate JSON Prompt
-                        </>
+                    <div className="flex gap-2">
+                      <Button 
+                        onClick={handleTextSubmit}
+                        disabled={!originalText.trim() || isGenerating}
+                        className="flex-1 bg-gradient-to-r from-primary to-purple-600"
+                      >
+                        {isGenerating ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Generating...
+                          </>
+                        ) : (
+                          <>
+                            <Wand2 className="mr-2 h-4 w-4" />
+                            Generate JSON Prompt
+                          </>
+                        )}
+                      </Button>
+                      {originalText && (
+                        <Button 
+                          variant="outline"
+                          onClick={handleClearText}
+                          className="px-4"
+                        >
+                          <X className="h-4 w-4 mr-2" />
+                          Clear
+                        </Button>
                       )}
-                    </Button>
+                    </div>
                   </div>
                 ) : (
                   <div>
