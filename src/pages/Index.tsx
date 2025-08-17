@@ -141,7 +141,7 @@ const Index = () => {
               <Mic className="h-5 w-5 text-white" />
             </div>
             <div>
-            <h1 className="text-xl sm:text-2xl font-bold font-poppins gradient-text">
+            <h1 className="text-xl sm:text-2xl font-bold font-poppins text-white drop-shadow-lg">
                 AI Prompt Generator
               </h1>
               <p className="text-sm text-muted-foreground hidden sm:block">
