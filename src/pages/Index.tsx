@@ -128,8 +128,9 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-hero relative">
       {/* Animated background elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-purple-500/20 to-primary/20 rounded-full blur-3xl animate-float-delayed"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-radial from-primary/5 to-transparent rounded-full animate-pulse"></div>
       </div>
 
       {/* Header */}
@@ -140,8 +141,7 @@ const Index = () => {
               <Mic className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold font-poppins gradient-text">
-                AI Prompt Generator
+            <h1 className="text-xl sm:text-2xl font-bold font-poppins gradient-text">
                 AI Prompt Generator
               </h1>
               <p className="text-sm text-muted-foreground hidden sm:block">
@@ -149,7 +149,7 @@ const Index = () => {
               </p>
             </div>
           </div>
-          <Button variant="outline" onClick={handleSignOut} className="shadow-elegant">
+          <Button variant="outline" onClick={handleSignOut} className="shadow-elegant hover:scale-105 transition-transform duration-200">
             <LogOut className="h-4 w-4 mr-2" />
             <span className="hidden sm:inline">Sign Out</span>
           </Button>
@@ -232,10 +232,10 @@ const Index = () => {
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <Button 
+                      <Button
                         onClick={handleTextSubmit}
                         disabled={!originalText.trim() || isGenerating}
-                        className="flex-1 bg-gradient-to-r from-primary to-purple-600"
+                        className="flex-1 bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 transition-all duration-300 transform hover:scale-[1.02] disabled:transform-none"
                       >
                         {isGenerating ? (
                           <>
