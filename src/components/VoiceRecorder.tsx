@@ -69,28 +69,61 @@ export const VoiceRecorder = ({ onTranscription, disabled }: VoiceRecorderProps)
         String.fromCharCode(...new Uint8Array(arrayBuffer))
       );
 
+      console.log('Sending audio for transcription...');
+      
       const { data, error } = await supabase.functions.invoke('voice-to-text', {
         body: { audio: base64Audio }
       });
 
+      console.log('Voice-to-text response:', { data, error });
+
       if (error) {
+        console.error('Supabase function error:', error);
+        
+        // Handle specific OpenAI quota errors
+        if (error.message?.includes('exceeded your current quota')) {
+          toast({
+            title: "OpenAI API Quota Exceeded",
+            description: "The OpenAI API quota has been exceeded. Please check your OpenAI billing details.",
+            variant: "destructive",
+          });
+          return;
+        }
+        
         throw error;
       }
 
       if (data?.text) {
+        console.log('Transcription successful:', data.text);
         onTranscription(data.text);
         toast({
           title: "Transcription complete",
-          description: "Your voice has been converted to text",
+          description: `Your voice has been converted to text: "${data.text.substring(0, 50)}${data.text.length > 50 ? '...' : ''}"`,
         });
       } else {
-        throw new Error('No transcription received');
+        console.error('No transcription text in response:', data);
+        toast({
+          title: "No transcription received",
+          description: "The audio was processed but no text was returned. Please try speaking more clearly.",
+          variant: "destructive",
+        });
       }
     } catch (error) {
       console.error('Error processing audio:', error);
+      
+      let errorMessage = "Failed to process audio. Please try again.";
+      
+      if (error.message?.includes('quota')) {
+        errorMessage = "OpenAI API quota exceeded. Please check billing details.";
+      } else if (error.message?.includes('network')) {
+        errorMessage = "Network error. Please check your connection.";
+      } else if (error.message?.includes('microphone')) {
+        errorMessage = "Microphone access error. Please check permissions.";
+      }
+      
       toast({
-        title: "Error",
-        description: "Failed to process audio. Please try again.",
+        title: "Voice Processing Error",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
