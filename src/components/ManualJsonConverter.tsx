@@ -17,6 +17,15 @@ export const ManualJsonConverter = ({ onSave }: ManualJsonConverterProps) => {
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
 
+  // Individual template fields
+  const [task, setTask] = useState('');
+  const [context, setContext] = useState('');
+  const [requirements, setRequirements] = useState('');
+  const [outputFormat, setOutputFormat] = useState('');
+  const [examples, setExamples] = useState('');
+  const [tone, setTone] = useState('');
+  const [constraints, setConstraints] = useState('');
+
   const jsonTemplate = {
     task: "Brief description of what the AI should do",
     context: "Relevant background information",
@@ -25,6 +34,29 @@ export const ManualJsonConverter = ({ onSave }: ManualJsonConverterProps) => {
     examples: ["Example of expected output if applicable"],
     tone: "Desired tone (professional, casual, etc.)",
     constraints: ["Any limitations or things to avoid"]
+  };
+
+  const generateJsonFromFields = () => {
+    const jsonObj: Record<string, any> = {};
+    if (task.trim()) jsonObj.task = task.trim();
+    if (context.trim()) jsonObj.context = context.trim();
+    if (requirements.trim()) {
+      jsonObj.requirements = requirements.split('\n').filter(req => req.trim()).map(req => req.trim());
+    }
+    if (outputFormat.trim()) jsonObj.output_format = outputFormat.trim();
+    if (examples.trim()) {
+      jsonObj.examples = examples.split('\n').filter(ex => ex.trim()).map(ex => ex.trim());
+    }
+    if (tone.trim()) jsonObj.tone = tone.trim();
+    if (constraints.trim()) {
+      jsonObj.constraints = constraints.split('\n').filter(con => con.trim()).map(con => con.trim());
+    }
+    return JSON.stringify(jsonObj, null, 2);
+  };
+
+  const handleGenerateFromFields = () => {
+    const generatedJson = generateJsonFromFields();
+    setJsonPrompt(generatedJson);
   };
 
   const handleGenerateTemplate = () => {
@@ -91,30 +123,131 @@ export const ManualJsonConverter = ({ onSave }: ManualJsonConverterProps) => {
         />
       </div>
 
-      {/* JSON Template */}
+      {/* Form Builder */}
       <Card className="bg-muted/30">
-        <CardHeader className="pb-3">
+        <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-sm">JSON Template</CardTitle>
+            <CardTitle className="text-lg">JSON Prompt Builder</CardTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleGenerateFromFields}
+              className="h-8"
+            >
+              Generate JSON
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2">
+            {/* Task */}
+            <div className="space-y-2">
+              <Label htmlFor="task" className="text-sm font-medium">
+                Task <span className="text-muted-foreground">*</span>
+              </Label>
+              <Textarea
+                id="task"
+                placeholder="Brief description of what the AI should do"
+                value={task}
+                onChange={(e) => setTask(e.target.value)}
+                className="min-h-[80px] resize-none"
+              />
+            </div>
+
+            {/* Context */}
+            <div className="space-y-2">
+              <Label htmlFor="context" className="text-sm font-medium">
+                Context
+              </Label>
+              <Textarea
+                id="context"
+                placeholder="Relevant background information"
+                value={context}
+                onChange={(e) => setContext(e.target.value)}
+                className="min-h-[80px] resize-none"
+              />
+            </div>
+
+            {/* Requirements */}
+            <div className="space-y-2">
+              <Label htmlFor="requirements" className="text-sm font-medium">
+                Requirements
+              </Label>
+              <Textarea
+                id="requirements"
+                placeholder="List specific requirements (one per line)"
+                value={requirements}
+                onChange={(e) => setRequirements(e.target.value)}
+                className="min-h-[80px] resize-none"
+              />
+            </div>
+
+            {/* Output Format */}
+            <div className="space-y-2">
+              <Label htmlFor="output-format" className="text-sm font-medium">
+                Output Format
+              </Label>
+              <Textarea
+                id="output-format"
+                placeholder="Desired format for the response"
+                value={outputFormat}
+                onChange={(e) => setOutputFormat(e.target.value)}
+                className="min-h-[80px] resize-none"
+              />
+            </div>
+
+            {/* Examples */}
+            <div className="space-y-2">
+              <Label htmlFor="examples" className="text-sm font-medium">
+                Examples
+              </Label>
+              <Textarea
+                id="examples"
+                placeholder="Example of expected output (one per line)"
+                value={examples}
+                onChange={(e) => setExamples(e.target.value)}
+                className="min-h-[80px] resize-none"
+              />
+            </div>
+
+            {/* Tone */}
+            <div className="space-y-2">
+              <Label htmlFor="tone" className="text-sm font-medium">
+                Tone
+              </Label>
+              <Textarea
+                id="tone"
+                placeholder="Desired tone (professional, casual, etc.)"
+                value={tone}
+                onChange={(e) => setTone(e.target.value)}
+                className="min-h-[80px] resize-none"
+              />
+            </div>
+          </div>
+
+          {/* Constraints - Full Width */}
+          <div className="space-y-2">
+            <Label htmlFor="constraints" className="text-sm font-medium">
+              Constraints
+            </Label>
+            <Textarea
+              id="constraints"
+              placeholder="Any limitations or things to avoid (one per line)"
+              value={constraints}
+              onChange={(e) => setConstraints(e.target.value)}
+              className="min-h-[80px] resize-none"
+            />
+          </div>
+
+          <div className="flex justify-center pt-2">
             <Button
               variant="outline"
               size="sm"
               onClick={handleGenerateTemplate}
-              className="h-8"
+              className="text-xs"
             >
-              Use Template
+              Or use default template
             </Button>
-          </div>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <div className="flex flex-wrap gap-2">
-            <Badge variant="secondary">task</Badge>
-            <Badge variant="secondary">context</Badge>
-            <Badge variant="secondary">requirements</Badge>
-            <Badge variant="secondary">output_format</Badge>
-            <Badge variant="secondary">examples</Badge>
-            <Badge variant="secondary">tone</Badge>
-            <Badge variant="secondary">constraints</Badge>
           </div>
         </CardContent>
       </Card>
