@@ -18,9 +18,9 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <TooltipProvider>
-        <div className="min-h-screen flex flex-col">
-          <main className="flex-1">
-            <BrowserRouter>
+        <BrowserRouter>
+          <div className="min-h-screen flex flex-col">
+            <main className="flex-1">
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/auth" element={<Auth />} />
@@ -29,10 +29,10 @@ const App = () => (
                 <Route path="/terms" element={<TermsOfService />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
-            </BrowserRouter>
-          </main>
-          <Footer />
-        </div>
+            </main>
+            <Footer />
+          </div>
+        </BrowserRouter>
         <Toaster />
         <Sonner />
       </TooltipProvider>
